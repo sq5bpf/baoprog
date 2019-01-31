@@ -1,0 +1,93 @@
+baoprog - Baofeng UV3R EEPROM programmer v0.2
+(c) 2012 Jacek Lipkowski <sq5bpf@lipkowski.org>
+
+This program can read and write the eeprom of Baofeng UV3R Mark II and probably
+other similar radios via the serial port.  It can read/write arbitrary data,
+and might be useful for reverse engineering the radio configuration. Please
+note that it is probably possible to break yor radio by writing a bad
+configuration to it, so please use at your own risk. The program is written to
+(hopefully) run on POSIX systems. Testing was done on GNU/Linux, but MacOS X
+and windows under cygwin should work too. For licensing see the file LICENSE.
+
+The communications protocol information was taken from the Chirp sources.
+
+
+---- Usage ----
+
+For a basic usage use -r to read eeprom, -w to write eeprom. The -v option
+gives more verbosity.
+
+Read configuration:
+
+sq5bpf@dellix:~/baoprog-0.1$ ./baoprog -v -r
+Baofeng UV3R EEPROM programmer v0.1 (c) 2012 Jacek Lipkowski <sq5bpf@lipkowski.org>
+
+uv3r_prepare: try 0
+Sucessfuly read eeprom
+
+The eeprom contents are written to the file uv3r_eeprom.raw, this can be
+changed with the -f option.
+
+
+Write configuration from file uv3r_eeprom.raw:
+
+sq5bpf@dellix:~/baoprog-0.1$ ./baoprog -v -w
+Baofeng UV3R EEPROM programmer v0.1 (c) 2012 Jacek Lipkowski <sq5bpf@lipkowski.org>
+
+uv3r_prepare: try 0
+Read file uv3r_eeprom.raw success
+Sucessfuly wrote eeprom
+
+
+Other configuration options are:
+-f <file>       filename that contains the eeprom dump (default: uv3r_eeprom.raw)
+-r      read eeprom
+-w      write eeprom
+-p <port>       device name (default: /dev/ttyUSB0)
+-s <speed>      serial speed (default: 9600, the UV3R doesn't accept any other speed)
+-h      print this help
+-v      be verbose, use multiple times for more verbosity
+
+
+
+The baopatch utility is for setting various configuration settings bits in the 
+UV-3R Mark II eeprom image. This has been abandoned for now, but works
+somewhat. No documentation is given, use baopatch -h or read the source. 
+
+
+---- Compiling ----
+
+This software was tested to compile using gcc on GNU/Linux systems, using a
+simple makefile:
+
+sq5bpf@dellix:~/baoprog-0.1$ make
+gcc -O2 baoprog.c -o baoprog
+
+Other POSIX platforms should work also, including MacOS X. 
+
+The software compiles under Cygwin/Microsoft Windows, but has not been tested.
+According to the cygwin documentation you should use /dev/comX to use port comX
+(for example using com6: baoprog.exe -v -r -p /dev/com6)
+
+
+If port this to another platform, or do anything interesting with this
+software, tell me about it.
+
+---- Other uses ----
+
+The file uv3r_markII_eeprom.raw contains an eeprom downloaded from a UV-3R Mark
+II with 65-108MHz radio. Maybe it can be used to resurrect another radio of the
+same type, which was flashed with an incorrect firmware version (the DDD.D25
+problem), or maybe it will enable 65-108MHz FM radio. If you want to risk it,
+it can be flashed to your radio like this:
+
+baoprog -f uv3r_markII_eeprom.raw -v -w -p /dev/port
+
+where /dev/port would be the serial port device (on linux for example
+/dev/ttyUSB0, /dev/ttyS1 etc, on windows /dev/com1 etc). 
+
+
+VY 73
+
+Jacek / SQ5BPF
+
